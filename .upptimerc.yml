@@ -133,6 +133,8 @@ status-website:
     section h2, .f h2, main.container h2 { font-size: 0.82rem !important; font-weight: 600 !important; letter-spacing: 0.08em; text-transform: uppercase; color: var(--plum-56) !important; margin: 0 !important; }
     section + h2, section h2 { margin-top: 2rem !important; }
     .f.changed { margin-top: 2rem; margin-bottom: 0.75rem; }
+    main.container > section + section { margin-top: 2.25rem; }
+    main.container > section + section > h2 { margin-bottom: 0.75rem !important; }
     h3 { font-size: 0.8rem !important; font-weight: 600 !important; letter-spacing: 0.06em; text-transform: uppercase; color: var(--plum-40) !important; opacity: 1 !important; margin: 1.5rem 0 0.5rem !important; }
 
     /* Period selector → segmented pills */
