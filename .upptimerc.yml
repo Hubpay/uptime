@@ -1,9 +1,10 @@
-# Hubpay public status page — Upptime configuration (v2, 14 Sep 2026)
+# Hubpay public status page — Upptime configuration
 # Repo: https://github.com/Hubpay/uptime  (must be PUBLIC for the site to read its own data via the GitHub API)
-# Setup: replace the template's .upptimerc.yml with this file → Settings → Pages → Source: gh-pages branch →
-# Actions run every 5 min. Page: https://hubpay.github.io/uptime  (or status.hubpay.io once the CNAME below is
-# created in Cloudflare: CNAME status → hubpay.github.io).
-# Endpoints: Andrew Knight to confirm/adjust before the repo is made public.
+# Page: https://status.hubpay.io  (Cloudflare hubpay.io zone: CNAME status -> hubpay.github.io, managed in
+#       Hubpay/infra-core-eu cloudflare/status-page.tf; GitHub Pages source: gh-pages branch).
+# Checks run every 5 min from GitHub-hosted runners. Endpoint list: Andrew Knight to confirm/adjust.
+# NOTE: after editing this file dispatch "Static Site CI" (and "Summary CI") manually unless a GH_PAT secret
+#       with `workflow` scope exists — the default Actions token cannot rewrite workflow files, so Setup CI fails.
 
 owner: Hubpay
 repo: uptime
@@ -24,65 +25,183 @@ sites:
     url: https://pay.hubpay.ae
   - name: UAE PASS integration
     url: https://uaepass.hubpay.io/actuator/health/liveness
+    # uaepass.hubpay.io sits behind an AWS WAF IP allow-list (UAE PASS egress IPs + our VPC only — see
+    # wallet/infra-app-eu/uaepass-waf.tf and values.prod-eu.yaml hubpayUAEPassInboundCIDRs). Every other
+    # source, including GitHub runners, gets HTTP 403 from the ALB by design. A 403 therefore proves the
+    # NLB/ALB/WAF edge is up; the application behind it is the wallet service already covered above.
+    expectedStatusCodes: [403]
   - name: Corporate portal
     url: https://corporate.hubpay.ae/auth/signin
 # NOTE: the bare hubpay.ae root domain has never served the site (known unresolved domain issue) — hubpay.io is the canonical web address, so hubpay.ae is intentionally not monitored.
 
+# Colours for the response-time chart on each service's history page (read by the status-page Graph component)
+graphBackgroundColor: "#EDEAFD"
+graphBorderColor: "#241C3F"
+
+i18n:
+  footer: "© Hubpay. Checks run every 5 minutes from GitHub Actions · [Incident history]($REPO/issues?q=label%3Astatus) · Powered by [Upptime](https://upptime.js.org)"
+  liveStatus: "Services"
+  activeIncidents: "Active incidents"
+  pastIncidents: "Past incidents"
+  overallUptime: "Uptime $UPTIME"
+  averageResponseTime: "Response $TIMEms"
+  incidentReport: "Incident #$NUMBER →"
+  incidentViewOnGitHub: "View and subscribe on GitHub"
+
 status-website:
-  cname: status.hubpay.io            # Cloudflare: CNAME status -> hubpay.github.io (DNS only / proxied), being set up by Daniel
+  cname: status.hubpay.io            # Cloudflare (hubpay.io zone): CNAME status -> hubpay.github.io
+  publish: true                      # build the site even while the repo is private (data still needs a public repo)
   name: Hubpay Status
-  logoUrl: https://framerusercontent.com/images/GBxBCBBJTdJ0QmZJmsuNvAb5nZI.svg   # current hubpay.io wordmark; replace with a self-hosted copy before go-live
-  favicon: https://framerusercontent.com/images/T6rQDNzOxPDLHrvweJRHuyV3fk.svg
+  hideNavTitle: true                 # the wordmark already says Hubpay
+  logoUrl: https://raw.githubusercontent.com/Hubpay/uptime/master/assets/logo.svg     # self-hosted copy of the hubpay.io wordmark (also served at /logo.svg)
+  favicon: https://raw.githubusercontent.com/Hubpay/uptime/master/assets/favicon.svg
   introTitle: "Hubpay system status"
   introMessage: "Live availability of Hubpay's customer-facing services, checked every five minutes from GitHub's infrastructure. For support, email help@hubpay.ae."
   navbar:
     - title: Status
       href: /
     - title: Incident history
-      href: https://github.com/Hubpay/uptime/issues?q=is%3Aissue+label%3Astatus
+      href: https://github.com/Hubpay/uptime/issues?q=label%3Astatus
     - title: hubpay.io
       href: https://hubpay.io
+  metaTags:
+    - name: description
+      content: "Live status and incident history for Hubpay's customer-facing services."
+    - name: robots
+      content: "index,follow"
+  links:
+    - rel: preconnect
+      href: https://fonts.googleapis.com
+    - rel: preconnect
+      href: https://fonts.gstatic.com
+    - rel: stylesheet
+      href: https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap
   theme: light
-  # Brand stylesheet — Hubpay palette from hubpay.io (deep plum #241C3F, lavender #EDEAFD, blush #FCF5FF, green #239F57,
-  # red #F83838, blue #1A46B7) applied through Upptime's own theme variables plus light structural tweaks.
+  # Brand stylesheet — Hubpay palette (deep plum #241C3F, lavender #EDEAFD, blush #FCF5FF, green #239F57,
+  # red #F83838, blue #1A46B7) applied through Upptime's theme variables plus structural restyling of the
+  # status-page Svelte DOM (nav .logo, main.container header, section.live-status article, .tag, footer …).
   css: |
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     :root, html, body {
-      --body-background-color: #FCF5FF; --body-text-color: #241C3F;
-      --card-background-color: #FFFFFF; --card-border-color: #EDEAFD;
-      --nav-background-color: transparent; --nav-border-bottom-color: transparent; --nav-current-border-bottom-color: #241C3F;
-      --up-border-left-color: #239F57; --degraded-border-left-color: #E9A23B; --down-border-left-color: #F83838; --down-background-color: #FEE9E9;
+      --plum: #241C3F; --plum-72: rgba(36,28,63,.72); --plum-56: rgba(36,28,63,.56); --plum-40: rgba(36,28,63,.40);
+      --lavender: #EDEAFD; --blush: #FCF5FF; --green: #239F57; --red: #F83838; --blue: #1A46B7; --amber: #E9A23B;
+      --body-background-color: #FBF9FF; --body-text-color: #241C3F;
+      --card-background-color: #FFFFFF; --card-border-color: #E8E4F7;
+      --nav-background-color: transparent; --nav-border-bottom-color: transparent; --nav-current-border-bottom-color: transparent;
+      --up-border-left-color: #239F57; --degraded-border-left-color: #E9A23B; --down-border-left-color: #F83838; --down-background-color: #FFF1F1;
+      --up-color-color: #241C3F; --degraded-color-color: #241C3F; --down-color-color: #241C3F;
       --tag-color: #FFFFFF; --tag-up-background-color: #239F57; --tag-degraded-background-color: #E9A23B; --tag-down-background-color: #F83838;
-      --change-background-color: #E9A23B;
+      --change-background-color: #EDEAFD;
       --submit-button-background-color: #241C3F; --submit-button-border-color: #241C3F; --submit-button-color: #FFFFFF;
       --error-button-background-color: #241C3F; --error-button-border-color: #241C3F; --error-button-color: #FFFFFF;
+      --graph-opacity: 1; --graph-filter: none;
     }
-    body { font-family: "Switzer", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif !important; -webkit-font-smoothing: antialiased;
-      background: linear-gradient(180deg, #FCF5FF 0%, #FFFFFF 480px) !important; color: #241C3F !important; }
-    a { color: #1A46B7; }
-    nav { box-shadow: none !important; }
-    nav .logo img { height: 32px !important; width: auto !important; }
-    nav .logo div, nav ul a { color: #241C3F !important; font-weight: 600; }
-    nav ul a { opacity: .8; } nav ul a:hover { opacity: 1; }
-    main.container header h1 { font-size: clamp(2rem, 4vw, 3rem) !important; font-weight: 700 !important; letter-spacing: -.02em; margin-top: 2rem; }
-    main.container header p.lead { color: rgba(36,28,63,.72) !important; font-size: 1.05rem !important; max-width: 62ch; }
-    section h2 { font-size: 1.15rem !important; font-weight: 600 !important; letter-spacing: .01em; color: rgba(36,28,63,.72) !important; margin-top: 2.25rem; }
-    article { border-radius: 18px !important; border: 1px solid #EDEAFD !important; box-shadow: 0 8px 30px rgba(36,28,63,.06) !important;
-      padding: 1.1rem 1.35rem !important; transition: transform .15s ease, box-shadow .15s ease; }
-    article:hover { transform: translateY(-1px); box-shadow: 0 12px 34px rgba(36,28,63,.10) !important; }
-    article.up { border-left: 4px solid #239F57 !important; }
-    article.degraded { border-left: 4px solid #E9A23B !important; }
-    article.down { border-left: 4px solid #F83838 !important; }
-    article h4 { font-size: 1rem !important; font-weight: 600 !important; margin: 0 0 .5rem !important; }
-    article h4 a { color: #241C3F !important; text-decoration: none; } article h4 a:hover { color: #1A46B7 !important; }
-    article img.icon { border-radius: 6px; }
-    article span.data { font-weight: 600; color: #241C3F; }
-    article .f.r a { color: #1A46B7 !important; font-weight: 500; }
-    form.f.r label { border-radius: 999px !important; font-weight: 500; }
-    footer { color: rgba(36,28,63,.48) !important; border-top: 1px solid #EDEAFD; padding: 2rem 0 !important; font-size: .85rem; }
-    footer a { color: rgba(36,28,63,.72) !important; }
-    footer a[href*="upptime.js.org"] { display: none !important; }
-    @media (max-width: 640px) { article { padding: .9rem 1rem !important; } main.container header h1 { font-size: 1.75rem !important; } }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+      background: radial-gradient(1200px 520px at 50% -160px, #F3EFFF 0%, rgba(243,239,255,0) 70%), #FBF9FF !important;
+      color: var(--plum) !important; padding-bottom: 3rem !important; line-height: 1.55;
+    }
+    a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .container { max-width: 860px !important; padding: 0 1.5rem !important; }
+    h1, h2, h3, h4 { letter-spacing: -0.01em; }
+
+    /* Nav */
+    nav { border-bottom: none !important; margin-bottom: 1.5rem !important; padding: 0.75rem 1rem !important; box-shadow: none !important; }
+    nav .container { max-width: 860px; }
+    nav .logo { padding: 0.75rem 0 !important; margin-right: 1rem !important; }
+    nav .logo img { height: 28px !important; width: auto !important; margin-right: 0 !important; border-radius: 0 !important; }
+    nav ul { gap: 0.25rem; }
+    nav ul a { color: var(--plum-72) !important; font-weight: 500; font-size: 0.92rem; padding: 0.55rem 0.9rem !important; border-radius: 999px; border-bottom: none !important; transition: background .15s ease, color .15s ease; }
+    nav ul a:hover { color: var(--plum) !important; background: rgba(36,28,63,.06); }
+    nav ul a[aria-current] { color: var(--plum) !important; background: var(--lavender); border-bottom: none !important; }
+
+    /* Header */
+    main.container header { margin: 1.5rem 0 1.75rem !important; }
+    main.container header h1 { font-size: clamp(2rem, 4.5vw, 2.9rem) !important; font-weight: 700 !important; letter-spacing: -0.03em; line-height: 1.1 !important; margin-bottom: 0.6rem !important; }
+    main.container header p.lead { color: var(--plum-72) !important; font-size: 1.02rem !important; max-width: 64ch; margin: 0; }
+    main.container header p.lead a { color: var(--blue); }
+
+    /* Overall status banner (rendered when there are no open incidents) */
+    main.container > article.up {
+      background: linear-gradient(135deg, #EAF8EF 0%, #F4FBF6 100%) !important; border: 1px solid #C8EBD5 !important; border-left: 1px solid #C8EBD5 !important;
+      border-radius: 18px !important; padding: 1.15rem 1.4rem !important; font-weight: 600; font-size: 1.05rem; color: #14532D !important;
+      box-shadow: 0 1px 0 rgba(20,83,45,.06), 0 12px 32px -18px rgba(35,159,87,.45); margin-bottom: 1.75rem;
+    }
+
+    /* Section headings */
+    section h2, .f h2, main.container h2 { font-size: 0.82rem !important; font-weight: 600 !important; letter-spacing: 0.08em; text-transform: uppercase; color: var(--plum-56) !important; margin: 0 !important; }
+    section + h2, section h2 { margin-top: 2rem !important; }
+    .f.changed { margin-top: 2rem; margin-bottom: 0.75rem; }
+    h3 { font-size: 0.8rem !important; font-weight: 600 !important; letter-spacing: 0.06em; text-transform: uppercase; color: var(--plum-40) !important; opacity: 1 !important; margin: 1.5rem 0 0.5rem !important; }
+
+    /* Period selector → segmented pills */
+    form.f.r { background: #FFFFFF; border: 1px solid var(--card-border-color); border-radius: 999px; padding: 0.2rem; gap: 0; box-shadow: 0 1px 2px rgba(36,28,63,.04); }
+    form.f.r label { margin: 0 !important; padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.82rem; font-weight: 500 !important; color: var(--plum-56); cursor: pointer; transition: background .15s ease, color .15s ease; }
+    form.f.r label:hover { color: var(--plum); }
+    form.f.r input:checked + label { background: var(--plum); color: #FFFFFF; font-weight: 600 !important; }
+
+    /* Service cards */
+    article {
+      border-radius: 16px !important; border: 1px solid var(--card-border-color) !important; padding: 1.05rem 1.3rem !important;
+      box-shadow: 0 1px 2px rgba(36,28,63,.04), 0 10px 30px -22px rgba(36,28,63,.35) !important; transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    article + article { margin-top: 0.6rem !important; }
+    article.link:hover { transform: translateY(-1px); border-color: #D9D3F2 !important; box-shadow: 0 2px 4px rgba(36,28,63,.05), 0 16px 36px -20px rgba(36,28,63,.45) !important; }
+    section.live-status article.up, section.live-status article.degraded, section.live-status article.down { border-left: 1px solid var(--card-border-color) !important; }
+    section.live-status article.down { background: #FFF6F6 !important; border-color: #FBD5D5 !important; }
+    section.live-status article.degraded { background: #FFFAF0 !important; border-color: #F6E2B8 !important; }
+    section.live-status article.graph { background-size: auto 78% !important; background-position: right 1rem center !important; background-blend-mode: soft-light; }
+    section.live-status article h4 { font-size: 1rem !important; font-weight: 600 !important; margin: 0 0 0.45rem !important; display: flex; align-items: center; gap: 0.5rem; padding-left: 1.1rem; position: relative; }
+    section.live-status article h4::before { content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(35,159,87,.15); }
+    section.live-status article.degraded h4::before { background: var(--amber); box-shadow: 0 0 0 4px rgba(233,162,59,.18); }
+    section.live-status article.down h4::before { background: var(--red); box-shadow: 0 0 0 4px rgba(248,56,56,.16); animation: hp-pulse 1.6s ease-in-out infinite; }
+    @keyframes hp-pulse { 0%,100% { box-shadow: 0 0 0 4px rgba(248,56,56,.16); } 50% { box-shadow: 0 0 0 7px rgba(248,56,56,.06); } }
+    section.live-status article h4 img.icon { display: none; }
+    section.live-status article h4 a { color: var(--plum) !important; text-decoration: none; }
+    section.live-status article > div { display: inline-flex; align-items: center; margin-right: 0.5rem; font-size: 0.86rem; color: var(--plum-56); padding-left: 1.1rem; }
+    section.live-status article span.data { font-weight: 600 !important; color: var(--plum) !important; background: var(--lavender) !important; border-radius: 999px !important; padding: 0.1rem 0.55rem !important; margin-left: 0.35rem; font-variant-numeric: tabular-nums; }
+    .changed + section .data { background: #DCD6FA !important; }
+
+    /* Incident cards */
+    article.down.link, article.degraded.link { border-left: 1px solid var(--card-border-color) !important; color: var(--plum) !important; }
+    article.down-active { background: #FFF6F6 !important; border-color: #FBD5D5 !important; }
+    article.down.link h4, article.down-active h4 { font-size: 1rem !important; font-weight: 600 !important; margin: 0 0 0.3rem !important; }
+    article.down.link > .f > div:first-child > div, article.down-active > .f > div:first-child > div { font-size: 0.86rem; color: var(--plum-56); }
+    article .f.r a, article .f .r a { color: var(--blue) !important; font-weight: 500; font-size: 0.9rem; text-decoration: none; }
+    article .f.r a:hover { text-decoration: underline; }
+
+    /* Tags (Up / Down / Fixed / Ongoing) */
+    .tag { border-radius: 999px !important; padding: 0.25rem 0.65rem !important; font-size: 0.68rem !important; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* History & incident pages */
+    main.container section h1 { font-size: 1.75rem !important; font-weight: 700 !important; letter-spacing: -0.02em; }
+    main.container section h1 a { color: var(--plum) !important; }
+    main.container > h2 { font-size: 1.5rem !important; font-weight: 700 !important; letter-spacing: -0.02em; text-transform: none; color: var(--plum) !important; margin: 0.5rem 0 1.25rem !important; }
+    dl { display: grid; grid-template-columns: auto auto; gap: 0.35rem 2rem; align-items: baseline; }
+    dl dt { font-size: 0.78rem; font-weight: 600 !important; letter-spacing: 0.06em; text-transform: uppercase; color: var(--plum-56); }
+    dl dd { margin: 0 !important; font-weight: 600; font-variant-numeric: tabular-nums; }
+    main.container > footer a { color: var(--blue); font-weight: 500; text-decoration: none; }
+
+    /* Buttons & loading */
+    .submit-button, a.error-button { border-radius: 999px !important; padding: 0.6rem 1.2rem; font-weight: 600; text-decoration: none; }
+    .loading svg { stroke: #B7AEE0 !important; }
+
+    /* Footer */
+    body > #sapper > footer, footer { color: var(--plum-40) !important; font-size: 0.82rem; opacity: 1 !important; margin-top: 3.5rem !important; padding: 1.75rem 1.5rem 0; border-top: 1px solid var(--card-border-color); max-width: 860px; margin-left: auto !important; margin-right: auto !important; box-sizing: border-box; }
+    footer a { color: var(--plum-72) !important; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      nav .container { flex-wrap: wrap; justify-content: center !important; }
+      nav .logo { float: none !important; margin-right: 0 !important; }
+      nav ul { width: 100%; justify-content: center; }
+      main.container header h1 { font-size: 1.85rem !important; }
+      .f.changed { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+      article { padding: 0.9rem 1rem !important; }
+      section.live-status article.graph { background-image: none !important; }
+      dl { grid-template-columns: 1fr; }
+    }
 
 # Notifications: create a Slack incoming webhook for #tech-service-alerts and store it as the repository
 # secret NOTIFICATION_SLACK_WEBHOOK_URL, then uncomment:
