@@ -1,7 +1,7 @@
 url: https://uaepass.hubpay.io/actuator/health/liveness
-status: down
+status: up
 code: 403
-responseTime: 260
-lastUpdated: 2026-09-14T20:39:24.253Z
+responseTime: 539
+lastUpdated: 2026-09-14T21:06:28.535Z
 startTime: 2026-09-14T20:39:11.096Z
 generator: Upptime <https://github.com/upptime/upptime>
