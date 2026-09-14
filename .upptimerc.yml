@@ -53,7 +53,7 @@ status-website:
   publish: true                      # build the site even while the repo is private (data still needs a public repo)
   name: Hubpay Status
   hideNavTitle: true                 # the wordmark already says Hubpay
-  logoUrl: https://raw.githubusercontent.com/Hubpay/uptime/master/assets/logo.svg     # self-hosted copy of the hubpay.io wordmark (also served at /logo.svg)
+  logoUrl: https://raw.githubusercontent.com/Hubpay/uptime/master/assets/logo.svg     # self-hosted hubpay.io wordmark (framerusercontent WYBD3duRxnumGKVgo1mhVFkIs.svg, 114×32; also served at /logo.svg)
   favicon: https://raw.githubusercontent.com/Hubpay/uptime/master/assets/favicon.svg
   introTitle: "Hubpay system status"
   introMessage: "Live availability of Hubpay's customer-facing services, checked every five minutes from GitHub's infrastructure. For support, email help@hubpay.ae."
