@@ -1,0 +1,97 @@
+# Hubpay public status page — Upptime configuration (v2, 14 Sep 2026)
+# Repo: https://github.com/Hubpay/uptime  (must be PUBLIC for the site to read its own data via the GitHub API)
+# Setup: replace the template's .upptimerc.yml with this file → Settings → Pages → Source: gh-pages branch →
+# Actions run every 5 min. Page: https://hubpay.github.io/uptime  (or status.hubpay.io once the CNAME below is
+# created in Cloudflare: CNAME status → hubpay.github.io).
+# Endpoints: Andrew Knight to confirm/adjust before the repo is made public.
+
+owner: Hubpay
+repo: uptime
+user-agent: hubpay-status
+
+sites:
+  - name: Hubpay website
+    url: https://hubpay.io
+  - name: Business portal
+    url: https://business.hubpay.io
+  - name: Wallet API — Spring Boot health
+    url: https://wallet.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness (confirmed by Daniel 14 Sep); expects HTTP 200 {"status":"UP"}
+    expectedStatusCodes: [200]
+  - name: Public API — Spring Boot health
+    url: https://api.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness (confirmed by Daniel 14 Sep)
+    expectedStatusCodes: [200]
+  - name: Payment links
+    url: https://pay.hubpay.ae
+  - name: UAE PASS integration
+    url: https://uaepass.hubpay.io/actuator/health/liveness
+  - name: Corporate portal
+    url: https://corporate.hubpay.ae/auth/signin
+# NOTE: the bare hubpay.ae root domain has never served the site (known unresolved domain issue) — hubpay.io is the canonical web address, so hubpay.ae is intentionally not monitored.
+
+status-website:
+  cname: status.hubpay.io            # Cloudflare: CNAME status -> hubpay.github.io (DNS only / proxied), being set up by Daniel
+  name: Hubpay Status
+  logoUrl: https://framerusercontent.com/images/GBxBCBBJTdJ0QmZJmsuNvAb5nZI.svg   # current hubpay.io wordmark; replace with a self-hosted copy before go-live
+  favicon: https://framerusercontent.com/images/T6rQDNzOxPDLHrvweJRHuyV3fk.svg
+  introTitle: "Hubpay system status"
+  introMessage: "Live availability of Hubpay's customer-facing services, checked every five minutes from GitHub's infrastructure. For support, email help@hubpay.ae."
+  navbar:
+    - title: Status
+      href: /
+    - title: Incident history
+      href: https://github.com/Hubpay/uptime/issues?q=is%3Aissue+label%3Astatus
+    - title: hubpay.io
+      href: https://hubpay.io
+  theme: light
+  # Brand stylesheet — Hubpay palette from hubpay.io (deep plum #241C3F, lavender #EDEAFD, blush #FCF5FF, green #239F57,
+  # red #F83838, blue #1A46B7) applied through Upptime's own theme variables plus light structural tweaks.
+  css: |
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    :root, html, body {
+      --body-background-color: #FCF5FF; --body-text-color: #241C3F;
+      --card-background-color: #FFFFFF; --card-border-color: #EDEAFD;
+      --nav-background-color: transparent; --nav-border-bottom-color: transparent; --nav-current-border-bottom-color: #241C3F;
+      --up-border-left-color: #239F57; --degraded-border-left-color: #E9A23B; --down-border-left-color: #F83838; --down-background-color: #FEE9E9;
+      --tag-color: #FFFFFF; --tag-up-background-color: #239F57; --tag-degraded-background-color: #E9A23B; --tag-down-background-color: #F83838;
+      --change-background-color: #E9A23B;
+      --submit-button-background-color: #241C3F; --submit-button-border-color: #241C3F; --submit-button-color: #FFFFFF;
+      --error-button-background-color: #241C3F; --error-button-border-color: #241C3F; --error-button-color: #FFFFFF;
+    }
+    body { font-family: "Switzer", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif !important; -webkit-font-smoothing: antialiased;
+      background: linear-gradient(180deg, #FCF5FF 0%, #FFFFFF 480px) !important; color: #241C3F !important; }
+    a { color: #1A46B7; }
+    nav { box-shadow: none !important; }
+    nav .logo img { height: 32px !important; width: auto !important; }
+    nav .logo div, nav ul a { color: #241C3F !important; font-weight: 600; }
+    nav ul a { opacity: .8; } nav ul a:hover { opacity: 1; }
+    main.container header h1 { font-size: clamp(2rem, 4vw, 3rem) !important; font-weight: 700 !important; letter-spacing: -.02em; margin-top: 2rem; }
+    main.container header p.lead { color: rgba(36,28,63,.72) !important; font-size: 1.05rem !important; max-width: 62ch; }
+    section h2 { font-size: 1.15rem !important; font-weight: 600 !important; letter-spacing: .01em; color: rgba(36,28,63,.72) !important; margin-top: 2.25rem; }
+    article { border-radius: 18px !important; border: 1px solid #EDEAFD !important; box-shadow: 0 8px 30px rgba(36,28,63,.06) !important;
+      padding: 1.1rem 1.35rem !important; transition: transform .15s ease, box-shadow .15s ease; }
+    article:hover { transform: translateY(-1px); box-shadow: 0 12px 34px rgba(36,28,63,.10) !important; }
+    article.up { border-left: 4px solid #239F57 !important; }
+    article.degraded { border-left: 4px solid #E9A23B !important; }
+    article.down { border-left: 4px solid #F83838 !important; }
+    article h4 { font-size: 1rem !important; font-weight: 600 !important; margin: 0 0 .5rem !important; }
+    article h4 a { color: #241C3F !important; text-decoration: none; } article h4 a:hover { color: #1A46B7 !important; }
+    article img.icon { border-radius: 6px; }
+    article span.data { font-weight: 600; color: #241C3F; }
+    article .f.r a { color: #1A46B7 !important; font-weight: 500; }
+    form.f.r label { border-radius: 999px !important; font-weight: 500; }
+    footer { color: rgba(36,28,63,.48) !important; border-top: 1px solid #EDEAFD; padding: 2rem 0 !important; font-size: .85rem; }
+    footer a { color: rgba(36,28,63,.72) !important; }
+    footer a[href*="upptime.js.org"] { display: none !important; }
+    @media (max-width: 640px) { article { padding: .9rem 1rem !important; } main.container header h1 { font-size: 1.75rem !important; } }
+
+# Notifications: create a Slack incoming webhook for #tech-service-alerts and store it as the repository
+# secret NOTIFICATION_SLACK_WEBHOOK_URL, then uncomment:
+# notifications:
+#   - type: slack
+#     channel: "#tech-service-alerts"
+
+# Optional: add GitHub usernames to be assigned to incident issues, e.g.
+# assignees:
+#   - <andrew-github-username>
+
+# Keep defaults: uptime check every 5 min, response-time graphs daily, summary README updated each run.
