@@ -95,18 +95,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/uaepass.hubpay.io.ico",
     "slug": "uae-pass-integration",
     "status": "down",
-    "uptime": "63.93%",
-    "uptimeDay": "63.93%",
-    "uptimeWeek": "63.93%",
-    "uptimeMonth": "63.93%",
-    "uptimeYear": "63.93%",
+    "uptime": "0.76%",
+    "uptimeDay": "0.76%",
+    "uptimeWeek": "0.76%",
+    "uptimeMonth": "0.76%",
+    "uptimeYear": "0.76%",
     "time": 260,
     "timeDay": 260,
     "timeWeek": 260,
     "timeMonth": 260,
     "timeYear": 260,
     "dailyMinutesDown": {
-      "2026-09-14": 0
+      "2026-09-14": 26
     }
   },
   {
