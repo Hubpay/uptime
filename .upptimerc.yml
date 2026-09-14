@@ -15,23 +15,15 @@ sites:
     url: https://hubpay.io
   - name: Business portal
     url: https://business.hubpay.io
-  - name: Wallet API — Spring Boot health
-    url: https://wallet.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness (confirmed by Daniel 14 Sep); expects HTTP 200 {"status":"UP"}
+  - name: Mobile app API
+    url: https://wallet.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness for the wallet service behind the Hubpay app; expects HTTP 200 {"status":"UP"}
     expectedStatusCodes: [200]
-  - name: Public API — Spring Boot health
-    url: https://api.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness (confirmed by Daniel 14 Sep)
+  - name: Public API
+    url: https://api.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness
     expectedStatusCodes: [200]
-  - name: Payment links
-    url: https://pay.hubpay.ae
-  - name: UAE PASS integration
-    url: https://uaepass.hubpay.io/actuator/health/liveness
-    # uaepass.hubpay.io sits behind an AWS WAF IP allow-list (UAE PASS egress IPs + our VPC only — see
-    # wallet/infra-app-eu/uaepass-waf.tf and values.prod-eu.yaml hubpayUAEPassInboundCIDRs). Every other
-    # source, including GitHub runners, gets HTTP 403 from the ALB by design. A 403 therefore proves the
-    # NLB/ALB/WAF edge is up; the application behind it is the wallet service already covered above.
-    expectedStatusCodes: [403]
-  - name: Corporate portal
-    url: https://corporate.hubpay.ae/auth/signin
+# Scope agreed with Daniel 14 Sep 2026: website, business portal, public API and mobile app API only.
+# uaepass.hubpay.io is IP-allow-listed to UAE PASS egress + VPC by AWS WAF (403 to everyone else) so it cannot be
+# monitored from GitHub runners; pay.hubpay.ae and corporate.hubpay.ae were dropped from the public page.
 # NOTE: the bare hubpay.ae root domain has never served the site (known unresolved domain issue) — hubpay.io is the canonical web address, so hubpay.ae is intentionally not monitored.
 
 # Colours for the response-time chart on each service's history page (read by the status-page Graph component)
