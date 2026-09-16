@@ -11,14 +11,14 @@ repo: uptime
 user-agent: hubpay-status
 
 sites:
-  - name: Hubpay website
+  - name: Website
     url: https://hubpay.io
-  - name: Business portal
-    url: https://business.hubpay.io
-  - name: Mobile app API
+  - name: Hubpay Business
+    url: https://business.hubpay.io   # business.hubpay.io portal
+  - name: Hubpay app
     url: https://wallet.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness for the wallet service behind the Hubpay app; expects HTTP 200 {"status":"UP"}
     expectedStatusCodes: [200]
-  - name: Public API
+  - name: API
     url: https://api.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness
     expectedStatusCodes: [200]
 # Scope agreed with Daniel 14 Sep 2026: website, business portal, public API and mobile app API only.
@@ -31,7 +31,7 @@ graphBackgroundColor: "#EDEAFD"
 graphBorderColor: "#241C3F"
 
 i18n:
-  footer: "© Hubpay. Availability is checked every 5 minutes; incidents are listed above as they happen · Powered by [Upptime](https://upptime.js.org)"
+  footer: "© Hubpay. Availability is checked every 5 minutes; incidents are listed above as they happen."
   liveStatus: "Services"
   activeIncidents: "Active incidents"
   pastIncidents: "Past incidents"
@@ -44,10 +44,10 @@ status-website:
   publish: true                      # build the site even while the repo is private (data still needs a public repo)
   name: Hubpay Status
   hideNavTitle: true                 # the wordmark already says Hubpay
-  logoUrl: https://raw.githubusercontent.com/Hubpay/uptime/master/assets/logo.svg     # self-hosted hubpay.io wordmark (framerusercontent WYBD3duRxnumGKVgo1mhVFkIs.svg, 114×32; also served at /logo.svg)
-  favicon: https://raw.githubusercontent.com/Hubpay/uptime/master/assets/favicon.svg
+  logoUrl: /logo.svg                 # assets/ is copied to the site root at build time; hubpay.io wordmark (framerusercontent WYBD3duRxnumGKVgo1mhVFkIs.svg, 114×32)
+  favicon: /favicon.svg
   introTitle: "Hubpay system status"
-  introMessage: "Live availability of Hubpay's customer-facing services, checked every five minutes from GitHub's infrastructure. For support, email help@hubpay.ae."
+  introMessage: "Live availability of Hubpay's customer-facing services, checked every five minutes. For support, email help@hubpay.ae."
   navbar:
     - title: Status
       href: /
