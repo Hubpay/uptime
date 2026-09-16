@@ -31,14 +31,13 @@ graphBackgroundColor: "#EDEAFD"
 graphBorderColor: "#241C3F"
 
 i18n:
-  footer: "© Hubpay. Checks run every 5 minutes from GitHub Actions · [Incident history]($REPO/issues?q=label%3Astatus) · Powered by [Upptime](https://upptime.js.org)"
+  footer: "© Hubpay. Availability is checked every 5 minutes; incidents are listed above as they happen · Powered by [Upptime](https://upptime.js.org)"
   liveStatus: "Services"
   activeIncidents: "Active incidents"
   pastIncidents: "Past incidents"
   overallUptime: "Uptime $UPTIME"
   averageResponseTime: "Response $TIMEms"
   incidentReport: "Incident #$NUMBER →"
-  incidentViewOnGitHub: "View and subscribe on GitHub"
 
 status-website:
   cname: status.hubpay.io            # Cloudflare (hubpay.io zone): CNAME status -> hubpay.github.io
@@ -52,10 +51,10 @@ status-website:
   navbar:
     - title: Status
       href: /
-    - title: Incident history
-      href: https://github.com/Hubpay/uptime/issues?q=label%3Astatus
     - title: hubpay.io
       href: https://hubpay.io
+    - title: Support
+      href: mailto:help@hubpay.ae
   metaTags:
     - name: description
       content: "Live status and incident history for Hubpay's customer-facing services."
@@ -180,6 +179,9 @@ status-website:
     /* Buttons & loading */
     .submit-button, a.error-button { border-radius: 999px !important; padding: 0.6rem 1.2rem; font-weight: 600; text-decoration: none; }
     .loading svg { stroke: #B7AEE0 !important; }
+
+    /* Hide the raw GitHub links the status-page template emits (incident pages, comment bylines) — customers stay on the status page */
+    main.container a[href*="github.com"] { display: none !important; }
 
     /* Footer */
     body > #sapper > footer, footer { color: var(--plum-40) !important; font-size: 0.82rem; opacity: 1 !important; margin-top: 3.5rem !important; padding: 1.75rem 1.5rem 0; border-top: 1px solid var(--card-border-color); max-width: 860px; margin-left: auto !important; margin-right: auto !important; box-sizing: border-box; }
