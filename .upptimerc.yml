@@ -54,7 +54,7 @@ status-website:
     - title: hubpay.io
       href: https://hubpay.io
     - title: Support
-      href: mailto:help@hubpay.ae
+      href: https://hubpay.io/contact-us
   metaTags:
     - name: description
       content: "Live status and incident history for Hubpay's customer-facing services."
