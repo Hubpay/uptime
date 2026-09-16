@@ -144,7 +144,14 @@ status-website:
     section.live-status article.up, section.live-status article.degraded, section.live-status article.down { border-left: 1px solid var(--card-border-color) !important; }
     section.live-status article.down { background: #FFF6F6 !important; border-color: #FBD5D5 !important; }
     section.live-status article.degraded { background: #FFFAF0 !important; border-color: #F6E2B8 !important; }
-    section.live-status article.graph { background-size: auto 78% !important; background-position: right 1rem center !important; background-blend-mode: soft-light; }
+    /* Response-time sparkline: Upptime renders it teal (#1abc9c) as a PNG background; re-draw it via a pseudo-element so it can be hue-shifted onto the plum palette */
+    section.live-status article.graph { background-image: none !important; overflow: hidden; }
+    section.live-status article.graph::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 42%; z-index: 0; pointer-events: none;
+      background-image: var(--background); background-repeat: no-repeat; background-position: right center; background-size: auto 100%;
+      filter: hue-rotate(85deg) saturate(.55) brightness(1.02); opacity: .9;
+      -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, #000 35%); mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, #000 35%); }
+    section.live-status article.graph > * { position: relative; z-index: 1; }
+    section.live-status article.graph > h4 a::after { z-index: 2; }
     section.live-status article h4 { font-size: 1rem !important; font-weight: 600 !important; margin: 0 0 0.45rem !important; display: flex; align-items: center; gap: 0.5rem; padding-left: 1.1rem; position: relative; }
     section.live-status article h4::before { content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(35,159,87,.15); }
     section.live-status article.degraded h4::before { background: var(--amber); box-shadow: 0 0 0 4px rgba(233,162,59,.18); }
@@ -195,7 +202,7 @@ status-website:
       main.container header h1 { font-size: 1.85rem !important; }
       main.container > div.f { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
       article { padding: 0.9rem 1rem !important; }
-      section.live-status article.graph { background-image: none !important; }
+      section.live-status article.graph::after { display: none; }
       dl { grid-template-columns: 1fr; }
     }
 
