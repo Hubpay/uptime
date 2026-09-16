@@ -23,7 +23,7 @@ sites:
     url: https://hubpay.io
     slug: hubpay-website          # slugs pinned to the original history files so graphs/uptime keep their full history across renames
   - name: Hubpay Business
-    url: https://business.hubpay.io   # business.hubpay.io portal
+    url: https://business.hubpay.io/auth/signin   # sign-in page directly: the root 307-redirects here, which doubled the measured response time
     slug: business-portal
   - name: Hubpay app
     slug: wallet-api-spring-boot-health
