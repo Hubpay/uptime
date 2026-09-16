@@ -10,6 +10,14 @@ owner: Hubpay
 repo: uptime
 user-agent: hubpay-status
 
+# The two production liveness routes sit behind a Cloudflare Access application that only admits this
+# service token (Hubpay/infra-core-eu cloudflare/status-page.tf). Values come from SSM in the prod account:
+#   /cloudflare/status-page-probe-service-token-client-id  -> repository secret CF_ACCESS_CLIENT_ID
+#   /cloudflare/status-page-probe-service-token-client-secret -> repository secret CF_ACCESS_CLIENT_SECRET
+secrets:
+  - CF_ACCESS_CLIENT_ID
+  - CF_ACCESS_CLIENT_SECRET
+
 sites:
   - name: Website
     url: https://hubpay.io
@@ -21,10 +29,16 @@ sites:
     slug: wallet-api-spring-boot-health
     url: https://wallet.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness for the wallet service behind the Hubpay app; expects HTTP 200 {"status":"UP"}
     expectedStatusCodes: [200]
+    headers:
+      - "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID"
+      - "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET"
   - name: API
     slug: public-api-spring-boot-health
     url: https://api.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness
     expectedStatusCodes: [200]
+    headers:
+      - "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID"
+      - "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET"
 # Scope agreed with Daniel 14 Sep 2026: website, business portal, public API and mobile app API only.
 # uaepass.hubpay.io is IP-allow-listed to UAE PASS egress + VPC by AWS WAF (403 to everyone else) so it cannot be
 # monitored from GitHub runners; pay.hubpay.ae and corporate.hubpay.ae were dropped from the public page.
