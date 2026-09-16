@@ -44,8 +44,8 @@ status-website:
   publish: true                      # build the site even while the repo is private (data still needs a public repo)
   name: Hubpay Status
   hideNavTitle: true                 # the wordmark already says Hubpay
-  logoUrl: /logo.svg                 # assets/ is copied to the site root at build time; hubpay.io wordmark (framerusercontent WYBD3duRxnumGKVgo1mhVFkIs.svg, 114×32)
-  favicon: /favicon.svg
+  logoUrl: https://status.hubpay.io/logo.svg     # assets/ is copied to the site root at build time (root-relative paths make the exporter crawl them as routes); hubpay.io wordmark (framerusercontent WYBD3duRxnumGKVgo1mhVFkIs.svg, 114×32)
+  favicon: https://status.hubpay.io/favicon.svg
   introTitle: "Hubpay system status"
   introMessage: "Live availability of Hubpay's customer-facing services, checked every five minutes. For support, email help@hubpay.ae."
   navbar:
