@@ -13,18 +13,33 @@ user-agent: hubpay-status
 sites:
   - name: Website
     url: https://hubpay.io
+    slug: hubpay-website          # slugs pinned to the original history files so graphs/uptime keep their full history across renames
   - name: Hubpay Business
     url: https://business.hubpay.io   # business.hubpay.io portal
+    slug: business-portal
   - name: Hubpay app
+    slug: wallet-api-spring-boot-health
     url: https://wallet.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness for the wallet service behind the Hubpay app; expects HTTP 200 {"status":"UP"}
     expectedStatusCodes: [200]
   - name: API
+    slug: public-api-spring-boot-health
     url: https://api.hubpay.ae/actuator/health/liveness   # Spring Boot actuator liveness
     expectedStatusCodes: [200]
 # Scope agreed with Daniel 14 Sep 2026: website, business portal, public API and mobile app API only.
 # uaepass.hubpay.io is IP-allow-listed to UAE PASS egress + VPC by AWS WAF (403 to everyone else) so it cannot be
 # monitored from GitHub runners; pay.hubpay.ae and corporate.hubpay.ae were dropped from the public page.
 # NOTE: the bare hubpay.ae root domain has never served the site (known unresolved domain issue) — hubpay.io is the canonical web address, so hubpay.ae is intentionally not monitored.
+
+# Schedules. Uptime CI only commits on status changes; response times (which feed the graphs) are recorded by
+# Response Time CI, so sample every 30 min instead of Upptime's once-a-day default and redraw graphs/summary every 6 h.
+# NOTE: without a GH_PAT secret Setup CI cannot regenerate the workflow files, so the crons in
+# .github/workflows/{response-time,graphs,summary}.yml are kept in sync by hand.
+workflowSchedule:
+  uptime: "*/5 * * * *"
+  responseTime: "*/30 * * * *"
+  graphs: "15 */6 * * *"
+  summary: "20 */6 * * *"
+  staticSite: "0 1 * * *"
 
 # Colours for the response-time chart on each service's history page (read by the status-page Graph component)
 graphBackgroundColor: "#EDEAFD"
