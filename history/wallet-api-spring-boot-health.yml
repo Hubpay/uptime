@@ -1,7 +1,7 @@
 url: https://wallet.hubpay.ae/actuator/health/liveness
 status: down
 code: 401
-responseTime: 463
-lastUpdated: 2026-09-17T05:18:24.196Z
+responseTime: 468
+lastUpdated: 2026-09-17T05:40:05.469Z
 startTime: 2026-09-14T20:39:08.910Z
 generator: Upptime <https://github.com/upptime/upptime>
