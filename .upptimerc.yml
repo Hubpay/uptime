@@ -1,8 +1,8 @@
 # Hubpay public status page — Upptime configuration
 # Repo: https://github.com/Hubpay/uptime  (must be PUBLIC for the site to read its own data via the GitHub API)
-# Page: https://status.hubpay.io  (Cloudflare hubpay.io zone: CNAME status -> hubpay.github.io, managed in
-#       Hubpay/infra-core-eu cloudflare/status-page.tf; GitHub Pages source: gh-pages branch).
-# Checks run every 5 min from GitHub-hosted runners. Endpoint list: Andrew Knight to confirm/adjust.
+# Page: https://status.hubpay.io  (Cloudflare hubpay.io zone: CNAME status -> hubpay.github.io, DNS/CDN
+#       managed in internal infra config; GitHub Pages source: gh-pages branch).
+# Checks run every 5 min from GitHub-hosted runners.
 # NOTE: after editing this file dispatch "Static Site CI" (and "Summary CI") manually unless a GH_PAT secret
 #       with `workflow` scope exists — the default Actions token cannot rewrite workflow files, so Setup CI fails.
 
@@ -11,9 +11,8 @@ repo: uptime
 user-agent: hubpay-status
 
 # The two production liveness routes sit behind a Cloudflare Access application that only admits this
-# service token (Hubpay/infra-core-eu cloudflare/status-page.tf). Values come from SSM in the prod account:
-#   /cloudflare/status-page-probe-service-token-client-id  -> repository secret CF_ACCESS_CLIENT_ID
-#   /cloudflare/status-page-probe-service-token-client-secret -> repository secret CF_ACCESS_CLIENT_SECRET
+# service token. Values are provisioned internally and stored as repository secrets:
+#   CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET
 secrets:
   - CF_ACCESS_CLIENT_ID
   - CF_ACCESS_CLIENT_SECRET
@@ -39,7 +38,7 @@ sites:
     headers:
       - "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID"
       - "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET"
-# Scope agreed with Daniel 14 Sep 2026: website, business portal, public API and mobile app API only.
+# Scope: website, business portal, public API and mobile app API only.
 # uaepass.hubpay.io is IP-allow-listed to UAE PASS egress + VPC by AWS WAF (403 to everyone else) so it cannot be
 # monitored from GitHub runners; pay.hubpay.ae and corporate.hubpay.ae were dropped from the public page.
 # NOTE: the bare hubpay.ae root domain has never served the site (known unresolved domain issue) — hubpay.io is the canonical web address, so hubpay.ae is intentionally not monitored.
