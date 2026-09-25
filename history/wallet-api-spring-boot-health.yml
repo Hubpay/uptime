@@ -1,7 +1,7 @@
 url: https://wallet.hubpay.ae/actuator/health/liveness
 status: up
 code: 200
-responseTime: 473
-lastUpdated: 2026-09-25T23:14:43.098Z
+responseTime: 527
+lastUpdated: 2026-09-25T23:37:16.644Z
 startTime: 2026-09-14T20:39:08.910Z
 generator: Upptime <https://github.com/upptime/upptime>
