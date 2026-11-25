@@ -11,8 +11,8 @@
     "uptimeMonth": "100.00%",
     "uptimeYear": "100.00%",
     "time": 358,
-    "timeDay": 320,
-    "timeWeek": 296,
+    "timeDay": 316,
+    "timeWeek": 297,
     "timeMonth": 332,
     "timeYear": 358,
     "dailyMinutesDown": {}
@@ -29,8 +29,8 @@
     "uptimeMonth": "100.00%",
     "uptimeYear": "100.00%",
     "time": 537,
-    "timeDay": 485,
-    "timeWeek": 502,
+    "timeDay": 484,
+    "timeWeek": 503,
     "timeMonth": 515,
     "timeYear": 537,
     "dailyMinutesDown": {}
@@ -40,35 +40,39 @@
     "url": "https://wallet.hubpay.ae/actuator/health/liveness",
     "icon": "https://icons.duckduckgo.com/ip3/wallet.hubpay.ae.ico",
     "slug": "wallet-api-spring-boot-health",
-    "status": "up",
+    "status": "down",
     "uptime": "100.00%",
-    "uptimeDay": "100.00%",
-    "uptimeWeek": "100.00%",
-    "uptimeMonth": "100.00%",
+    "uptimeDay": "99.82%",
+    "uptimeWeek": "99.97%",
+    "uptimeMonth": "99.99%",
     "uptimeYear": "100.00%",
     "time": 683,
-    "timeDay": 661,
-    "timeWeek": 660,
-    "timeMonth": 681,
+    "timeDay": 676,
+    "timeWeek": 662,
+    "timeMonth": 682,
     "timeYear": 683,
-    "dailyMinutesDown": {}
+    "dailyMinutesDown": {
+      "2026-11-25": 3
+    }
   },
   {
     "name": "API",
     "url": "https://api.hubpay.ae/actuator/health/liveness",
     "icon": "https://icons.duckduckgo.com/ip3/api.hubpay.ae.ico",
     "slug": "public-api-spring-boot-health",
-    "status": "up",
+    "status": "down",
     "uptime": "100.00%",
-    "uptimeDay": "100.00%",
-    "uptimeWeek": "100.00%",
+    "uptimeDay": "99.92%",
+    "uptimeWeek": "99.99%",
     "uptimeMonth": "100.00%",
     "uptimeYear": "100.00%",
     "time": 686,
-    "timeDay": 715,
+    "timeDay": 719,
     "timeWeek": 661,
     "timeMonth": 677,
     "timeYear": 686,
-    "dailyMinutesDown": {}
+    "dailyMinutesDown": {
+      "2026-11-25": 1
+    }
   }
 ]
